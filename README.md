@@ -1,56 +1,41 @@
 # SVG Importer for SketchUp 8 (Stable Edition)
 
-An advanced SVG import plugin for SketchUp 8, designed with a focus on Bezier curve interpolation and path continuity.
-SketchUp 8に標準搭載されていないSVGインポート機能を追加するRubyプラグインです。ベジェ曲線の補完とパスの連続性を重視して設計されています。
+SketchUp 8 に標準搭載されていない SVG インポート機能を追加するための Ruby プラグインです。
+ベジェ曲線の精度とパスの連続性を重視して設計されており、複雑な図形も正確に再現することを目指しています。
 
----
+## 🚀 主な特徴
 
-## 🚀 Features / 特徴
+* **高精度なベジェ曲線補完**: 三次ベジェ曲線を適切なステップ数で分割し、滑らかな曲線を SketchUp 上に再現します。
+* **パスの連続性維持**: `add_curve` メソッドを活用し、連続する線分を一本の「曲線エンティティ」として生成します。これにより、インポート後の編集が容易になります。
+* **広範なコマンド対応**: `M/m` (MoveTo), `L/l` (LineTo), `H/h` (Horizontal), `V/v` (Vertical), `C/c` (Cubic Bezier), `S/s` (Smooth Cubic Bezier), `Z/z` (ClosePath) に対応。
+* **最適化された処理**: バッチ描画ロジックを採用し、メモリ負荷を抑えつつ安定したインポートを実現しています。
 
-* **High-Precision Bezier Interpolation**: Accurately recreates smooth curves by subdividing cubic Bezier paths.
-  * **高精度なベジェ補完**: 三次ベジェ曲線を適切に分割し、滑らかな曲線を再現します。
-* **Path Continuity**: Leverages the `add_curve` method to ensure consecutive segments are treated as a single curve entity.
-  * **パスの連続性**: `add_curve` メソッドを活用し、連続する線分を一本の曲線として生成します。
-* **Broad Command Support**: Supports `M/m`, `L/l`, `H/h`, `V/v`, `C/c`, `S/s`, and `Z/z`.
-  * **広範なコマンド対応**: 主要なSVGパスコマンドを網羅しています。
-* **Optimized Performance**: Batch processing logic minimizes memory load during import.
-  * **最適化された処理**: バッチ描画ロジックにより、メモリ負荷を抑え高速に動作します。
+## 📂 インストール方法
 
-## 📂 Installation / インストール方法
-
-1. Download `svg_importer.rb`.
-   `svg_importer.rb` をダウンロードします。
-2. Place the file in the SketchUp 8 `Plugins` folder.
-   SketchUp 8の `Plugins` フォルダにファイルを配置します。
+1. `svg_importer.rb` （または本リポジトリのソースコード）をダウンロードします。
+2. SketchUp 8 の `Plugins` フォルダにファイルを配置します。
    - **Windows:** `C:\Program Files (x86)\Google\Google SketchUp 8\Plugins`
    - **macOS:** `/Library/Application Support/Google SketchUp 8/SketchUp/Plugins`
-3. Restart SketchUp.
-   SketchUpを再起動します。
+3. SketchUp を再起動します。
 
-## 🛠 Usage / 使い方
+## 🛠 使い方
 
-1. Navigate to **[Plugins] > [Import SVG (Stable)]**.
-   メニューの **[Plugins] > [Import SVG (Stable)]** をクリックします。
-2. Select your `.svg` file.
-   インポートしたい `.svg` ファイルを選択します。
-3. Edges/Curves will be generated automatically.
-   自動的にエッジや曲線が生成されます。
+1. メニューの **[Plugins] > [Import SVG (Stable)]** をクリックします。
+2. インポートしたい `.svg` ファイルを選択します。
+3. 自動的に座標が計算され、モデル上にエッジおよび曲線が生成されます。
 
-### Generating Faces / 面を生成するコツ
-Imported paths are generated as edges. To create a face, simply trace one of the edges with the **[Line Tool]**.
-インポートされた線はエッジの状態です。面を生成したい場合は、外周の一辺を **[鉛筆ツール]** でなぞってください。
+### 面（Face）を生成するコツ
+インポートされた線はエッジの状態です。面を生成したい場合は、生成された外周の線の一辺を **[鉛筆ツール]** でなぞってください。閉じたパスであれば、SketchUp の標準機能により面が自動生成されます。
 
-## ⚠️ Important Notes / 注意事項
+## ⚠️ 注意事項（重要）
 
-* **File Paths (Non-ASCII Characters)**: 
-  Ensure that the **SVG file name and its folder path do not contain 2-byte characters (e.g., Japanese, Chinese, or Korean)**. Using non-ASCII characters in the path may cause the import to fail.
-  **SVGファイル名および保存先のフォルダ名に、2バイト文字（日本語など）を含めないでください。** パスに全角文字が含まれていると、正常に読み込めない場合があります。
-* **Preparation**: Convert all objects to "Paths" in your design software (Inkscape, Illustrator, etc.) before saving the SVG.
-  SVG保存前に、デザインソフトで全てのオブジェクトを「パス」に変換しておくことを推奨します。
-* **Scaling**: Default scale is `0.1`. You can modify this in the script.
-  デフォルトの倍率は `0.1` です。コード内の `scale = 0.1` を書き換えることで調整可能です。
+* **2バイト文字の制限**: 
+  **SVGファイル名、およびその保存先のフォルダ名に日本語（全角文字）を含めないでください。** パスに2バイト文字が含まれていると、Rubyエンジンの制限により正常にファイルを読み込めない場合があります。必ず半角英数字のパスで使用してください。
+* **パスへの変換**: 
+  SVGを保存する前に、Adobe Illustrator や Inkscape 等のデザインソフトで「すべてのオブジェクトをパスに変換」しておいてください。
+* **スケール設定**: 
+  デフォルトの倍率は `0.1` です。モデルのサイズに合わせて調整したい場合は、コード内の `scale = 0.1` の値を編集してください。
 
-## 📄 License / ライセンス
+## 📄 ライセンス
 
-This project is released under the MIT License.
-このプロジェクトはMITライセンスの下で公開されています。
+このプロジェクトは MIT ライセンスの下で公開されています。
