@@ -1,3 +1,11 @@
 # SketchUp 8 SVG Importer
-A robust SVG importer for SketchUp 8, supporting high-precision path parsing and Bezier curve interpolation. 
-（SketchUp 8向けの高精度SVGインポーター。正確なパス解析とベジェ曲線補完をサポート。）
+SketchUp 8 SVG Importer
+
+本スクリプトは、標準でSVGインポート機能を備えていないSketchUp 8のために開発されたRubyプラグインです。
+過去にsvgのインポータは存在していたようなのですが、現時点で見つけられないため外部ライブラリを参照しないタイプのものを作成しました。
+
+主な特徴:
+高精度なパス解析: SVGの d 属性（MoveTo, LineTo, CurveTo等）を正確にパースし、SketchUp上に再現します。
+ベジェ曲線の補完: 三次ベジェ曲線を適切なセグメント数で補完し、滑らかな曲線を生成します。
+パスの連続性維持: add_curve メソッドを活用し、連続するセグメントを1本の「曲線（Curve）」エンティティとしてインポートします。
+相対座標への対応: SVG特有の相対座標コマンド（m, l, c等）を正確に計算し、座標の累積誤差を最小限に抑えています。
